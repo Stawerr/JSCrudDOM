@@ -1,3 +1,6 @@
+import {qs,qsa} from './helpers/dom.js'
+import {ael} from './helpers/domevents.js'
+
 class Person{
     #name
     #age
@@ -34,7 +37,7 @@ const vetor = [
 
 function createPerson(name,age){
     clear();
-
+    
     const p = new Person({name:name,age:age})
     vetor.push(p)
     
@@ -48,9 +51,10 @@ function clear(){
     });
 }
 
+
 function print(){
     
-    const tag = document.querySelector('ul')
+    const tag = qs('ul')
     
     vetor.forEach((p,index)=> {
         const liEl = document.createElement('li');
@@ -59,20 +63,33 @@ function print(){
         liEl.textContent=`${p.getName()} - ${p.getAge()}`;
         liEl.id = "li_" + index;
         but.id = "but_" + index;
-
+        
         tag.append(liEl,but)
         
         const elem = document.getElementById(but.id);
-
+        
         elem.onclick = function() {
             clear();
             vetor.splice(index, 1);
             print();
         };
-
     });
 }
 
 function onLoad(){
     print();
 }
+
+const form  = document.querySelector('form');
+
+ael(form,'submit',(e)=>{
+e.preventDefault();
+    if(e.target.name.value!=='' && e.target.age.value!=='' && e.target.age.value>0 && e.target.age.value<120){
+        createPerson(e.target.name.value, e.target.age.value)
+    }
+    else{
+        alert("Invalid input");
+    }
+})
+
+onLoad()
